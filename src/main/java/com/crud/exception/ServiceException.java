@@ -5,4 +5,8 @@ package com.crud.exception;
  * com mensagens em {@link ExceptionMessages}
  */
 public class ServiceException extends Exception {
+
+    public ServiceException(ExceptionMessages message) {
+        super(message.name());
+    }
 }
