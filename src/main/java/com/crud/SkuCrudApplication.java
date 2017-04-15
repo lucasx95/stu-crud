@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StuCrudApplication {
+public class SkuCrudApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StuCrudApplication.class, args);
+		SpringApplication.run(SkuCrudApplication.class, args);
 	}
 }

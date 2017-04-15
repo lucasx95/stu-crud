@@ -1,0 +1,17 @@
+Sku CRUD
+
+Server com arquitetura MVC, e com gerenciamento de dependências através do Maven.
+
+As principais tecnologias utilizadas foram o SpringJPA para o gerenciamento de entidades
+e RestTemplate para consumo de APIs.
+Para os testes foram utilizados jUnit, com testes que validam o resultado de cada
+fluxo.
+
+Para rodar:
+Opção 1 - É possível iniciar o servidor através do SpringBoot, para isso é
+necessário apenas rodar a classe StuCrudApplication.
+
+Opção 2 - Também é possível utilizar o Tomcat, rodando o comando 'mvn install',
+e utilizando o .war localizado no /target passando-o para o tomcat.
+
+Em ambos os casos é necessário instalar o PostgresSQL.
