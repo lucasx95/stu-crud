@@ -1,12 +1,19 @@
 package com.crud.persistence;
 
+import org.springframework.validation.annotation.Validated;
+
 import javax.persistence.*;
+import javax.validation.Valid;
+import java.io.Serializable;
 
 /**
  * Entidade para gerenciamento de produtos
  */
 @Entity
-public class Sku {
+public class Sku implements Serializable{
+
+
+    private static final long serialVersionUID = -699951994642815986L;
 
     /**
      * Id do Sku
