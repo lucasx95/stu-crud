@@ -1,8 +1,6 @@
 package com.crud.persistence;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Entidade para gerenciamento de produtos
@@ -14,8 +12,15 @@ public class Sku {
      * Id do Sku
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Integer id;
+
+    /**
+     * Id externo do Sku
+     */
+    @Column(name = "SKU_ID")
+    private Integer skuId;
 
     /**
      * Id do produto associado
@@ -30,6 +35,14 @@ public class Sku {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getSkuId() {
+        return this.skuId;
+    }
+
+    public void setSkuId(Integer skuId) {
+        this.skuId = skuId;
     }
 
     public Integer getProductId() {
