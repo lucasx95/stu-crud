@@ -121,7 +121,6 @@ public class SkuResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Sku>> getFiltered() {
         return ResponseEntity.ok(
-                skuRepository.findAll().stream()
-                        .filter(this.epicomApi::filterSku).collect(Collectors.toList()));
+                epicomApi.getFilteredSkus(this.skuRepository.findAll()));
     }
 }

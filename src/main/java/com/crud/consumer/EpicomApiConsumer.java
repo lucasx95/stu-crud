@@ -3,6 +3,7 @@ package com.crud.consumer;
 import com.crud.persistence.Sku;
 import com.crud.utils.RequestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import javafx.util.Pair;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe paar consumir api da Epicom
@@ -25,20 +29,35 @@ public class EpicomApiConsumer {
     }
 
     /**
-     * Filtra um Skus disponíveis e com preço entre 10 e 40
+     * Pega os detalhes de um SKu
      *
-     * @param sku sku a ser validado
-     * @return True se atende aos critérios, false caso não
-     */
-    public Boolean filterSku(Sku sku) {
+     * @param sku sku para pegar os detalhes
+     * @return SkuDetail os detalhes do Sku caso consiga pelo request, caso não
+     * retorna detalhes nulos
+     **/
+    private SkuDetail skuDetail(Sku sku) {
         try {
             final ResponseEntity<SkuDetail> response = template.exchange(filterRequestForSku(sku), HttpMethod.GET,
                     new HttpEntity<String>(basicAuthenticationHeader()), SkuDetail.class);
-            return response.getStatusCode().equals(HttpStatus.OK) && response.hasBody() &&
-                    response.getBody().valid();
+            return response.getBody();
         } catch (Exception e) {
-            return false;
+            return null;
         }
+    }
+
+    /**
+     * Retorna os skus filtrados e ordenados em ordem ascendente de preco
+     * @param skus os skus a serem filtradors e ordenados
+     * @return os skus filtrados e ordenados
+     */
+    public List<Sku> getFilteredSkus(List<Sku> skus) {
+        for (Sku sku : skus) {
+            sku.setSkuId(1);
+        }
+        return skus.stream().map(sku -> new Pair<>(skuDetail(sku), sku))
+                .filter(pair -> pair.getKey() != null && pair.getKey().valid())
+                .sorted(Comparator.comparing(sku -> sku.getKey().getPreco()))
+                .map(Pair::getValue).collect(Collectors.toList());
     }
 
     private String filterRequestForSku(Sku sku) {
