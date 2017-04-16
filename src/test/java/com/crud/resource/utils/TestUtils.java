@@ -21,16 +21,4 @@ public class TestUtils {
         return new ObjectMapper().writeValueAsString(object);
     }
 
-    /**
-     * Converte um json para objeto java
-     * @param json o json em string
-     * @param clazz a classe de saida desejada
-     * @param <T> o tipo da classe
-     * @return o objeto da classe T
-     * @throws IOException caso de falha ao criar o objeto
-     */
-    public static <T> T toObjejct(String json, Class<T> clazz) throws IOException {
-        return new ObjectMapper().readValue(json,clazz);
-    }
-
 }

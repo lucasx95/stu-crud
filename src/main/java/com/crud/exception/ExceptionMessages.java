@@ -11,5 +11,5 @@ public enum ExceptionMessages {
 
     UNEXPECTED_ERROR,
 
-    INVALID_ID;
+    INVALID_ID, INVALID_ACTION;
 }
