@@ -1,14 +1,16 @@
 package com.crud.resource;
 
 import com.crud.SkuRestApplication;
+import com.crud.consumer.EpicomApiConsumer;
 import com.crud.exception.ExceptionMessages;
 import com.crud.interceptor.ExceptionInterceptor;
 import com.crud.persistence.Sku;
 import com.crud.repository.SkuRepository;
-import com.crud.resource.utils.TestUtils;
+import com.crud.utils.RequestUtils;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,10 +42,13 @@ public class SkuResourceTest {
     @Autowired
     private SkuRepository skuRepository;
 
+    @Mock
+    private EpicomApiConsumer epicomApiConsumer;
+
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SkuResource skuResource = new SkuResource(skuRepository);
+        final SkuResource skuResource = new SkuResource(skuRepository, epicomApiConsumer);
         sku = createSku();
         this.skuRestMock = MockMvcBuilders.standaloneSetup(skuResource)
                 .setControllerAdvice(new ExceptionInterceptor())
@@ -55,7 +60,7 @@ public class SkuResourceTest {
         this.skuRestMock
                 .perform(post("/skus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.toJsonString(sku)))
+                        .content(RequestUtils.toJsonString(sku)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.skuId").value(sku.getSkuId()))
@@ -70,7 +75,7 @@ public class SkuResourceTest {
         this.skuRestMock
                 .perform(post("/skus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.toJsonString(sku)))
+                        .content(RequestUtils.toJsonString(sku)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.message").value(ExceptionMessages.ID_SHOULD_BE_NULL.name()));
@@ -80,7 +85,7 @@ public class SkuResourceTest {
     public void updateSku_IdNotExistent_OkNewSku() throws Exception {
         this.skuRestMock.perform(put("/skus")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.toJsonString(this.sku)))
+                .content(RequestUtils.toJsonString(this.sku)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(Matchers.notNullValue()));
     }
@@ -92,7 +97,7 @@ public class SkuResourceTest {
         this.sku.setProductId(2);
         this.skuRestMock.perform(put("/skus")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.toJsonString(this.sku)))
+                .content(RequestUtils.toJsonString(this.sku)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(this.sku.getId()))
                 .andExpect(jsonPath("$.skuId").value(this.sku.getSkuId()))
@@ -105,7 +110,7 @@ public class SkuResourceTest {
         final MvcResult result = this.skuRestMock.perform(get("/skus"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains(TestUtils.toJsonString(this.sku)));
+        assertTrue(result.getResponse().getContentAsString().contains(RequestUtils.toJsonString(this.sku)));
     }
 
     @Test
@@ -138,7 +143,7 @@ public class SkuResourceTest {
     @Test
     public void deleteSku_Id_Ok() throws Exception {
         // adiciona sku ao banco
-        this.skuRestMock.perform(delete("/skus/{id}",Integer.MAX_VALUE))
+        this.skuRestMock.perform(delete("/skus/{id}", Integer.MAX_VALUE))
                 .andExpect(status().isBadRequest());
     }
 

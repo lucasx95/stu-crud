@@ -1,5 +1,6 @@
 package com.crud.resource;
 
+import com.crud.consumer.EpicomApiConsumer;
 import com.crud.exception.ExceptionMessages;
 import com.crud.exception.ServiceException;
 import com.crud.persistence.Sku;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Controller para requisições Sku
@@ -26,9 +28,12 @@ public class SkuResource {
 
     private final SkuRepository skuRepository;
 
+    private final EpicomApiConsumer epicomApi;
+
     @Autowired
-    public SkuResource(SkuRepository skuRepository) {
+    public SkuResource(SkuRepository skuRepository, EpicomApiConsumer epicomApi) {
         this.skuRepository = skuRepository;
+        this.epicomApi = epicomApi;
     }
 
     /**
@@ -107,4 +112,16 @@ public class SkuResource {
         return ResponseEntity.ok(null);
     }
 
+    /**
+     * Pega todos Skus filtrados por disponíveis e preço entre 10 e 40
+     * @return os Skus que se adequam a condição
+     */
+    @RequestMapping(value = "/filtered",
+            method= RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Sku>> getFiltered() {
+        return ResponseEntity.ok(
+                skuRepository.findAll().stream()
+                        .filter(this.epicomApi::filterSku).collect(Collectors.toList()));
+    }
 }

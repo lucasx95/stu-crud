@@ -1,4 +1,4 @@
-package com.crud.resource.utils;
+package com.crud.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 /**
- * Classe para auxílio nos testes
+ * Classe para auxílio em requests
  */
-public class TestUtils {
+public class RequestUtils {
 
 
     /**
