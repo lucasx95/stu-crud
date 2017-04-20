@@ -51,9 +51,6 @@ public class EpicomApiConsumer {
      * @return os skus filtrados e ordenados
      */
     public List<Sku> getFilteredSkus(List<Sku> skus) {
-        for (Sku sku : skus) {
-            sku.setSkuId(1);
-        }
         return skus.stream().map(sku -> new Pair<>(skuDetail(sku), sku))
                 .filter(pair -> pair.getKey() != null && pair.getKey().valid())
                 .sorted(Comparator.comparing(sku -> sku.getKey().getPreco()))
